@@ -21,7 +21,7 @@ func TestNextToken(t *testing.T) {
 		{token.COMMA, ","},
 		{token.SEMICOLON, ";"},
 	}
-	l := New(input)
+	l := NewLexer(input)
 	for i, tt := range tests {
 		tkn := l.NextToken()
 		if tkn.Type != tt.expectedType {
@@ -85,7 +85,7 @@ func TestNextToken2(t *testing.T) {
 		{token.RPAREN, ")"},
 		{token.SEMICOLON, ";"},
 	}
-	l := New(input)
+	l := NewLexer(input)
 	for i, tt := range tests {
 		tkn := l.NextToken()
 		if tkn.Type != tt.expectedType {

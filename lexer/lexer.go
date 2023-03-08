@@ -12,15 +12,14 @@ type Lexer struct {
 	ch           byte
 }
 
-func New(input string) *Lexer {
-	log.Println("New(", input, ")")
+func NewLexer(input string) *Lexer {
 	l := &Lexer{input: input}
 	l.readChar()
 	return l
 }
 
+//
 func (l *Lexer) readChar() {
-	log.Println("readChar()")
 	if l.readPosition >= len(l.input) {
 		l.ch = 0
 	} else {
@@ -30,10 +29,12 @@ func (l *Lexer) readChar() {
 	l.readPosition += 1
 }
 
+// 次のトークンを取得する
 func (l *Lexer) NextToken() token.Token {
-	log.Println("(l *Lexer)NextToken()")
 	var tkn token.Token
-	l.skipWhitespace()
+
+	l.skipWhitespace() // 空白を飛ばす
+
 	switch l.ch {
 	case '=':
 		tkn = newToken(token.ASSIGN, l.ch)
@@ -58,24 +59,28 @@ func (l *Lexer) NextToken() token.Token {
 		if isLetter(l.ch) {
 			tkn.Literal = l.readIdentifier()
 			tkn.Type = token.LookupIdent(tkn.Literal)
-			log.Println("***", tkn)
+			return tkn
+		} else if isDigit(l.ch) {
+			tkn.Type = token.INT
+			tkn.Literal = l.readNumber()
 			return tkn
 		} else {
 			tkn = newToken(token.ILLEGAL, l.ch)
 		}
 	}
 	l.readChar()
-	log.Println("xxx", tkn)
 	return tkn
 }
 
 func isLetter(ch byte) bool {
-	log.Println("isLetter(", ch, ")")
 	return ('a' <= ch && ch <= 'z') || ('A' <= ch && ch <= 'Z') || ch == '_'
 }
 
+func isDigit(ch byte) bool {
+	return '0' <= ch && ch <= '9'
+}
+
 func (l *Lexer) readIdentifier() string {
-	log.Println("(l *Lexer) readIdentifier()")
 	position := l.position
 	for isLetter(l.ch) {
 		l.readChar()
@@ -84,8 +89,16 @@ func (l *Lexer) readIdentifier() string {
 	return l.input[position:l.position]
 }
 
+func (l *Lexer) readNumber() string {
+	position := l.position
+	for isDigit(l.ch) {
+		l.readChar()
+	}
+	log.Println(position, l.position, l.input[position:l.position])
+	return l.input[position:l.position]
+}
+
 func newToken(tokenType token.TokenType, ch byte) token.Token {
-	log.Println(tokenType, "¥t", ch)
 	return token.Token{Type: tokenType, Literal: string(ch)}
 }
 
