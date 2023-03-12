@@ -1,3 +1,6 @@
+// REPLは、Read-Evel-Print Loopの略。
+// 直訳するなら、入力を受け取って、評価して、結果を出力するループ。
+// よくある人間がCLIでプログラムを1行ずつ入力しながら実行するアレ。
 package repl
 
 import (
